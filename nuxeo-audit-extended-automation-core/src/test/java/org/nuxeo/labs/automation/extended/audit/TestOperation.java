@@ -2,7 +2,6 @@ package org.nuxeo.labs.automation.extended.audit;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.nuxeo.audit.opensearch1.OpenSearchAuditFeature;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationChain;
 import org.nuxeo.ecm.automation.OperationContext;

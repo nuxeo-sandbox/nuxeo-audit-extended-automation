@@ -65,7 +65,7 @@ public class ExtendedAuditLog {
 
     @OperationMethod
     public DocumentModelList run(DocumentModelList docs) {
-        List<LogEntry> entries = new ArrayList<LogEntry>();
+        List<LogEntry> entries = new ArrayList<>();
         for (DocumentModel doc : docs) {
             entries.add(newEntry(doc));
         }
@@ -77,7 +77,6 @@ public class ExtendedAuditLog {
 
         LogEntryBuilder builder = LogEntry.builder(event, eventDate.getTime())
                 .category(category);
-
 
         if (doc!=null) {
             builder.docUUID(doc.getId());
