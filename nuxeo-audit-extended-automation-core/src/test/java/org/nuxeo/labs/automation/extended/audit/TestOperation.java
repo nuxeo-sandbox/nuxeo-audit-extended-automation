@@ -2,6 +2,7 @@ package org.nuxeo.labs.automation.extended.audit;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.audit.opensearch1.OpenSearchAuditFeature;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationChain;
 import org.nuxeo.ecm.automation.OperationContext;
@@ -13,16 +14,16 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
-import org.nuxeo.ecm.platform.audit.AuditFeature;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
+import org.nuxeo.audit.test.AuditFeature;
 
 import jakarta.inject.Inject;
 import java.util.Calendar;
 
 @RunWith(FeaturesRunner.class)
-@Features({AutomationFeature.class, AuditFeature.class})
+@Features({ AuditFeature.class, OpenSearchAuditFeature.class, AutomationFeature.class })
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
 @Deploy({
     "nuxeo-audit-extended-automation-core"

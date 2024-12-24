@@ -1,5 +1,8 @@
 package org.nuxeo.labs.automation.extended.audit;
 
+import org.nuxeo.audit.api.LogEntry;
+import org.nuxeo.audit.api.LogEntryBuilder;
+import org.nuxeo.audit.service.AuditBackend;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
@@ -9,9 +12,6 @@ import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.automation.core.util.Properties;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
-import org.nuxeo.ecm.platform.audit.api.AuditLogger;
-import org.nuxeo.ecm.platform.audit.api.ExtendedInfo;
-import org.nuxeo.ecm.platform.audit.api.LogEntry;
 
 import java.io.Serializable;
 import java.util.*;
@@ -26,7 +26,7 @@ public class ExtendedAuditLog {
     public static final String ID = "Audit.LogEventExtended";
 
     @Context
-    protected AuditLogger logger;
+    protected AuditBackend logger;
 
     @Context
     protected OperationContext ctx;
@@ -75,54 +75,46 @@ public class ExtendedAuditLog {
 
     protected LogEntry newEntry(DocumentModel doc) {
 
-        LogEntry entry = logger.newLogEntry();
-        entry.setEventId(event);
-        entry.setEventDate(eventDate.getTime());
-        entry.setCategory(category);
+        LogEntryBuilder builder = LogEntry.builder(event, new Date())
+                .category(category);
+
 
         if (doc!=null) {
-            entry.setDocUUID(doc.getId());
-            entry.setDocPath(doc.getPathAsString());
-            entry.setDocType(doc.getType());
-            entry.setRepositoryId(doc.getRepositoryName());
-            entry.setDocLifeCycle(doc.getCurrentLifeCycleState());
+            builder.docUUID(doc.getId());
+            builder.docPath(doc.getPathAsString());
+            builder.docType(doc.getType());
+            builder.repositoryId(doc.getRepositoryName());
+            builder.docLifeCycle(doc.getCurrentLifeCycleState());
         }
 
         if (comment!=null) {
-            entry.setComment(comment);
+            builder.comment(comment);
         }
 
         if (user != null) {
-            entry.setPrincipalName(user);
+            builder.principalName(user);
         } else {
-            entry.setPrincipalName(ctx.getPrincipal().getActingUser());
+            builder.principalName(ctx.getPrincipal().getActingUser());
         }
-
-        Map<String, ExtendedInfo> extendedInfoMap = new HashMap<>();
 
         for (Map.Entry<String,String> property : properties.entrySet()){
-            extendedInfoMap.put(property.getKey(),logger.newExtendedInfo(convertValue(property.getValue())));
+            builder.extended(property.getKey(),convertValue(property.getValue()));
         }
 
-        entry.setExtendedInfos(extendedInfoMap);
-
-        return entry;
+        return builder.build();
     }
 
     public Serializable convertValue(String str){
-
         //try integer
         try {
-            long number = Long.parseLong(str);
-            return number;
+            return Long.parseLong(str);
         } catch (NumberFormatException e) {
             //continue
         }
 
         //try float
         try {
-            double number = Double.parseDouble(str);
-            return number;
+            return Double.parseDouble(str);
         } catch (NumberFormatException e) {
             //continue
         }
