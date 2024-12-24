@@ -23,7 +23,7 @@ import jakarta.inject.Inject;
 import java.util.Calendar;
 
 @RunWith(FeaturesRunner.class)
-@Features({ AuditFeature.class, OpenSearchAuditFeature.class, AutomationFeature.class })
+@Features({ AuditFeature.class, AutomationFeature.class })
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
 @Deploy({
     "nuxeo-audit-extended-automation-core"
