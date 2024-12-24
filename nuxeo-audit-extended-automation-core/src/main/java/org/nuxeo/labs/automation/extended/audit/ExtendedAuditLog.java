@@ -75,7 +75,7 @@ public class ExtendedAuditLog {
 
     protected LogEntry newEntry(DocumentModel doc) {
 
-        LogEntryBuilder builder = LogEntry.builder(event, new Date())
+        LogEntryBuilder builder = LogEntry.builder(event, eventDate.getTime())
                 .category(category);
 
 
